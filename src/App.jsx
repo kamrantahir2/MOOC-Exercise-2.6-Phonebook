@@ -10,6 +10,7 @@ const App = () => {
     },
   ]);
   const [newName, setNewName] = useState("");
+  const [number, setNumber] = useState("");
 
   const checkIfExists = (nameinput) => {
     for (let i = 0; i < persons.length; i++) {
@@ -22,10 +23,9 @@ const App = () => {
   };
 
   const addToPhonebook = () => {
-    const name = newName;
-    const available = checkIfExists(name);
+    const available = checkIfExists(newName);
 
-    const newContact = { name: name };
+    const newContact = { name: newName, number: number };
     const newState = available ? persons.concat(newContact) : persons;
 
     setPersons(newState);
@@ -40,6 +40,10 @@ const App = () => {
     setNewName(event.target.value);
   };
 
+  const handleNumberChange = (event) => {
+    setNumber(event.target.value);
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -48,7 +52,7 @@ const App = () => {
           name: <input value={newName} onChange={handleChange} />
         </div>
         <div>
-          number: <input />
+          number: <input value={number} onChange={handleNumberChange} />
         </div>
         <div>
           <button type="submit" onClick={handleSubmit}>
@@ -58,7 +62,9 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       {persons.map((person) => (
-        <p key={person.name}>{person.name}</p>
+        <p key={person.name}>
+          {person.name} {person.number}
+        </p>
       ))}
     </div>
   );
