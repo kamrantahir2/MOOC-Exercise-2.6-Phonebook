@@ -23,6 +23,17 @@ const App = () => {
     return true;
   };
 
+  const filter = () => {
+    const search = searchInput.toLowerCase();
+    if (searchInput === "") {
+      return persons;
+    } else {
+      return persons.filter((person) =>
+        person.name.toLowerCase().startsWith(searchInput.toLowerCase())
+      );
+    }
+  };
+
   const addToPhonebook = () => {
     const available = checkIfExists(newName);
 
@@ -76,7 +87,7 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => (
+      {filter().map((person) => (
         <p key={person.name}>
           {person.name} {person.number}
         </p>
