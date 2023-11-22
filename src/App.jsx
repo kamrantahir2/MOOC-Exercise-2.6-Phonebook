@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 
 const App = () => {
   const [persons, setPersons] = useState([
-    {
-      name: "Arto Hellas",
-      number: "07438431212",
-    },
+    { name: "Arto Hellas", number: "040-123456", id: 1 },
+    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
   const [newName, setNewName] = useState("");
   const [number, setNumber] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const checkIfExists = (nameinput) => {
     for (let i = 0; i < persons.length; i++) {
@@ -44,11 +45,25 @@ const App = () => {
     setNumber(event.target.value);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchInput(event.target.value);
+  };
+
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <form>
         <div>
+          <h2>Search</h2>
+          name:{" "}
+          <input
+            type="text"
+            value={searchInput}
+            onChange={handleSearchChange}
+          />
+        </div>
+        <div>
+          <h2>Add new contact</h2>
           name: <input value={newName} onChange={handleChange} />
         </div>
         <div>
