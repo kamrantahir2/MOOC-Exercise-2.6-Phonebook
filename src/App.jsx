@@ -3,6 +3,8 @@ import axios from "axios";
 
 import "./App.css";
 
+import personsServices from "./services/persons";
+
 const Search = ({ searchState, handleSearchChange }) => {
   return (
     <div>
@@ -136,12 +138,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    const contacts = axios
-      .get("http://localhost:3001/persons")
-      .then((response) => {
-        console.log(response.data);
-        setPersons(response.data);
-      });
+    personsServices.getAll().then((initalPersons) => {
+      setPersons(initalPersons);
+    });
   }, []);
 
   return (
