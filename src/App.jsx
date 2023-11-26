@@ -93,7 +93,6 @@ const App = () => {
   };
 
   const filter = () => {
-    const search = searchInput.toLowerCase();
     if (searchInput === "") {
       return persons;
     } else {
@@ -105,11 +104,15 @@ const App = () => {
 
   const addToPhonebook = () => {
     const available = checkIfExists(newName);
-
     const newContact = { name: newName, number: number };
-    const newState = available ? persons.concat(newContact) : persons;
 
-    setPersons(newState);
+    if (available) {
+      personsServices.create(newContact).then((ret) => {
+        setPersons(persons.concat(ret));
+      });
+    } else {
+      setPersons(persons);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -141,6 +144,7 @@ const App = () => {
     personsServices.getAll().then((initalPersons) => {
       setPersons(initalPersons);
     });
+    console.log("persons: ", persons);
   }, []);
 
   return (
