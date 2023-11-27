@@ -91,7 +91,6 @@ const App = () => {
     }
     return true;
   };
-
   const filter = () => {
     if (searchInput === "") {
       return persons;
@@ -135,15 +134,28 @@ const App = () => {
   const displayContacts = () => {
     return filter().map((person) => (
       <p key={person.name}>
-        {person.name} {person.number}
+        {person.name} {person.number}{" "}
+        <button onClick={() => deleteContact(person.id)}>Delete</button>
       </p>
     ));
   };
 
-  useEffect(() => {
+  const deleteContact = (id) => {
+    personsServices.deleteContact(id);
+    personsServices.getAll().then((response) => {
+      console.log(response);
+      setPersons(response);
+    });
+  };
+
+  const updateState = () => {
     personsServices.getAll().then((initalPersons) => {
       setPersons(initalPersons);
     });
+  };
+
+  useEffect(() => {
+    updateState();
     console.log("persons: ", persons);
   }, []);
 

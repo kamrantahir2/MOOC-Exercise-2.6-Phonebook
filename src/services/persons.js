@@ -3,7 +3,10 @@ const baseUrl = "http://localhost:3001/persons";
 
 const getAll = () => {
   const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+  return request.then((response) => {
+    console.log(response.data);
+    return response.data;
+  });
 };
 
 const create = (newObject) => {
@@ -11,4 +14,8 @@ const create = (newObject) => {
   return request.then((response) => response.data);
 };
 
-export default { getAll, create };
+const deleteContact = (id) => {
+  return axios.delete(`${baseUrl}/${id}`);
+};
+
+export default { getAll, create, deleteContact };
