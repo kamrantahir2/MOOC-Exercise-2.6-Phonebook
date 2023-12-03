@@ -85,7 +85,8 @@ const App = () => {
   const checkIfExists = (nameinput) => {
     for (let i = 0; i < persons.length; i++) {
       if (persons[i].name === nameinput) {
-        alert(`${nameinput} is already in the phonebook`);
+        // alert(`${nameinput} is already in the phonebook`);
+        setNumber(persons[i].number);
         return false;
       }
     }
@@ -110,13 +111,32 @@ const App = () => {
         setPersons(persons.concat(ret));
       });
     } else {
-      setPersons(persons);
+    }
+  };
+
+  const getExistingContact = (existingName) => {
+    for (let i = 0; i < persons.length; i++) {
+      if (persons[i].name === existingName) {
+        return persons[i];
+      }
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    addToPhonebook();
+    const available = checkIfExists(newName);
+    if (available) {
+      addToPhonebook();
+    } else {
+      update();
+    }
+  };
+
+  const update = () => {
+    const updated = { name: newName, number: number };
+    const person = getExistingContact(newName);
+    axios.put(`http://localhost:3001/persons/${person.id}`, updated);
+    setPersons(persons.map((p) => (p.id !== person.id ? p : updated)));
   };
 
   const handleChange = (event) => {
@@ -131,6 +151,10 @@ const App = () => {
     setSearchInput(event.target.value);
   };
 
+  const getExistingNumber = (existingContact) => {
+    setNumber(existingContact.number);
+  };
+
   const displayContacts = () => {
     return filter().map((person) => (
       <p key={person.name}>
@@ -142,10 +166,7 @@ const App = () => {
 
   const deleteContact = (id) => {
     personsServices.deleteContact(id);
-    personsServices.getAll().then((response) => {
-      console.log(response);
-      setPersons(response);
-    });
+    setPersons(persons.filter((p) => p.id !== id));
   };
 
   const updateState = () => {
@@ -158,6 +179,10 @@ const App = () => {
     updateState();
     console.log("persons: ", persons);
   }, []);
+
+  // useEffect(() => {
+  //   displayContacts();
+  // }, [persons]);
 
   return (
     <div>
