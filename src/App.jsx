@@ -82,16 +82,15 @@ const App = () => {
   const [number, setNumber] = useState("");
   const [searchInput, setSearchInput] = useState("");
 
-  const checkIfExists = (nameinput) => {
+  const isAvailable = () => {
     for (let i = 0; i < persons.length; i++) {
-      if (persons[i].name === nameinput) {
-        // alert(`${nameinput} is already in the phonebook`);
-        setNumber(persons[i].number);
+      if (persons[i].name === newName) {
         return false;
       }
     }
     return true;
   };
+
   const filter = () => {
     if (searchInput === "") {
       return persons;
@@ -103,20 +102,25 @@ const App = () => {
   };
 
   const addToPhonebook = () => {
-    const available = checkIfExists(newName);
     const newContact = { name: newName, number: number };
+    const available = isAvailable();
 
     if (available) {
       personsServices.create(newContact).then((ret) => {
         setPersons(persons.concat(ret));
       });
     } else {
+      const existing = getExistingContact();
+      axios
+        .put(`http://localhost:3001/persons/${existing.id}`, newContact)
+        .then((resp) => console.log(resp));
+      setPersons(persons.map((p) => (p.id !== existing.id ? p : newContact)));
     }
   };
 
-  const getExistingContact = (existingName) => {
+  const getExistingContact = () => {
     for (let i = 0; i < persons.length; i++) {
-      if (persons[i].name === existingName) {
+      if (persons[i].name === newName) {
         return persons[i];
       }
     }
@@ -124,19 +128,7 @@ const App = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const available = checkIfExists(newName);
-    if (available) {
-      addToPhonebook();
-    } else {
-      update();
-    }
-  };
-
-  const update = () => {
-    const updated = { name: newName, number: number };
-    const person = getExistingContact(newName);
-    axios.put(`http://localhost:3001/persons/${person.id}`, updated);
-    setPersons(persons.map((p) => (p.id !== person.id ? p : updated)));
+    addToPhonebook();
   };
 
   const handleChange = (event) => {
@@ -149,10 +141,6 @@ const App = () => {
 
   const handleSearchChange = (event) => {
     setSearchInput(event.target.value);
-  };
-
-  const getExistingNumber = (existingContact) => {
-    setNumber(existingContact.number);
   };
 
   const displayContacts = () => {
@@ -179,10 +167,6 @@ const App = () => {
     updateState();
     console.log("persons: ", persons);
   }, []);
-
-  // useEffect(() => {
-  //   displayContacts();
-  // }, [persons]);
 
   return (
     <div>
