@@ -110,11 +110,14 @@ const App = () => {
         setPersons(persons.concat(ret));
       });
     } else {
-      const existing = getExistingContact();
+      let existing = getExistingContact();
       axios
         .put(`http://localhost:3001/persons/${existing.id}`, newContact)
         .then((resp) => console.log(resp));
-      setPersons(persons.map((p) => (p.id !== existing.id ? p : newContact)));
+
+      existing = { ...existing, number: number };
+
+      setPersons(persons.map((p) => (p.id !== existing.id ? p : existing)));
     }
   };
 
