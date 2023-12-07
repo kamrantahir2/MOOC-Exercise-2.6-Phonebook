@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import "./index.css";
 import "./App.css";
+import Notification from "./components/Notification";
 
 import personsServices from "./services/persons";
 
@@ -81,6 +82,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [number, setNumber] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [message, setMessage] = useState(null);
 
   const isAvailable = () => {
     for (let i = 0; i < persons.length; i++) {
@@ -109,6 +111,7 @@ const App = () => {
       personsServices.create(newContact).then((ret) => {
         setPersons(persons.concat(ret));
       });
+      setNotificationMessage(`${newContact.name} has been added`);
     } else {
       let existing = getExistingContact();
       axios
@@ -118,6 +121,7 @@ const App = () => {
       existing = { ...existing, number: number };
 
       setPersons(persons.map((p) => (p.id !== existing.id ? p : existing)));
+      setNotificationMessage(`${existing.name}'s number has been updated`);
     }
   };
 
@@ -156,6 +160,10 @@ const App = () => {
   };
 
   const deleteContact = (id) => {
+    const contact = persons.find((p) => p.id === id);
+    setNotificationMessage(
+      `${contact.name} has been deleted from the phonebook`
+    );
     personsServices.deleteContact(id);
     setPersons(persons.filter((p) => p.id !== id));
   };
@@ -166,6 +174,13 @@ const App = () => {
     });
   };
 
+  const setNotificationMessage = (text) => {
+    setMessage(text);
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
+
   useEffect(() => {
     updateState();
     console.log("persons: ", persons);
@@ -173,6 +188,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={message} />
       <h1>Phonebook</h1>
       <Form
         searchState={searchInput}
