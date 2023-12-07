@@ -83,6 +83,7 @@ const App = () => {
   const [number, setNumber] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [message, setMessage] = useState(null);
+  const [styleClass, setStyleClass] = useState("notification");
 
   const isAvailable = () => {
     for (let i = 0; i < persons.length; i++) {
@@ -111,6 +112,7 @@ const App = () => {
       personsServices.create(newContact).then((ret) => {
         setPersons(persons.concat(ret));
       });
+      setStyleClass("notification");
       setNotificationMessage(`${newContact.name} has been added`);
     } else {
       let existing = getExistingContact();
@@ -121,6 +123,7 @@ const App = () => {
       existing = { ...existing, number: number };
 
       setPersons(persons.map((p) => (p.id !== existing.id ? p : existing)));
+      setStyleClass("notification");
       setNotificationMessage(`${existing.name}'s number has been updated`);
     }
   };
@@ -161,11 +164,21 @@ const App = () => {
 
   const deleteContact = (id) => {
     const contact = persons.find((p) => p.id === id);
-    setNotificationMessage(
-      `${contact.name} has been deleted from the phonebook`
-    );
-    personsServices.deleteContact(id);
-    setPersons(persons.filter((p) => p.id !== id));
+
+    personsServices
+      .deleteContact(id)
+      .then(() => {
+        setNotificationMessage(
+          `${contact.name} has been deleted from the phonebook`
+        );
+        setPersons(persons.filter((p) => p.id !== id));
+      })
+      .catch(() => {
+        setStyleClass("error");
+        setNotificationMessage(
+          `ERROR! ${contact.name} has already been deleted`
+        );
+      });
   };
 
   const updateState = () => {
@@ -188,7 +201,7 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={message} />
+      <Notification styleClass={styleClass} message={message} />
       <h1>Phonebook</h1>
       <Form
         searchState={searchInput}
