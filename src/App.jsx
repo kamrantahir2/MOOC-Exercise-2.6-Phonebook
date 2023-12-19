@@ -117,7 +117,7 @@ const App = () => {
     } else {
       let existing = getExistingContact();
       axios
-        .put(`http://localhost:3001/persons/${existing.id}`, newContact)
+        .put(`http://localhost:3001/api/persons/${existing.id}`, newContact)
         .then((resp) => console.log(resp));
 
       existing = { ...existing, number: number };
@@ -181,11 +181,7 @@ const App = () => {
       });
   };
 
-  const updateState = () => {
-    personsServices.getAll().then((initalPersons) => {
-      setPersons(initalPersons);
-    });
-  };
+  const updateState = () => {};
 
   const setNotificationMessage = (text) => {
     setMessage(text);
@@ -195,7 +191,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    updateState();
+    personsServices.getAll().then((initalPersons) => {
+      setPersons(initalPersons);
+    });
     console.log("persons: ", persons);
   }, []);
 

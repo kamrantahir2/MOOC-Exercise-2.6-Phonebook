@@ -1,7 +1,9 @@
 import express from "express";
 const app = express();
 import morgan from "morgan";
+import cors from "cors";
 app.use(express.json());
+app.use(cors());
 
 morgan.token("body", (req) => {
   return JSON.stringify(req.body);
@@ -37,7 +39,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.send(JSON.stringify(persons, false, "<br />"));
+  response.send(JSON.stringify(persons));
 });
 
 app.get("/api/info", (request, response) => {
