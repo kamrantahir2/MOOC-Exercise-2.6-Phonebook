@@ -99,6 +99,7 @@ app.post("/api/persons", (request, response) => {
   persons = persons.concat(person);
 
   response.json(person);
+  console.log(persons);
 });
 
 const PORT = process.env.PORT || 3001;
