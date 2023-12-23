@@ -2,6 +2,7 @@ import express from "express";
 const app = express();
 import morgan from "morgan";
 import cors from "cors";
+import Contact from "./models/contact.js";
 app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
@@ -40,7 +41,9 @@ app.get("/", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.send(JSON.stringify(persons));
+  Contact.find({}).then((contacts) => {
+    response.send(contacts);
+  });
 });
 
 app.get("/api/info", (request, response) => {
