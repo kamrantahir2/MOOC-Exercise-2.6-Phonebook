@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const url = `mongodb+srv://kamrantahir117:${process.env.PASSWORD}@cluster0.qkxhsol.mongodb.net/PhonebookApp?retryWrites=true&w=majority`;
+const url = process.env.MONGODB_URI;
 
 console.log("Connection started");
 
 mongoose.set("strictQuery", false);
-mongoose.connect(url);
+mongoose
+  .connect(url)
+  .then(console.log("Connection successful"))
+  .catch((error) => console.log("Error connecting to MongoDB: ", error));
 
 const contactSchema = {
   name: String,
@@ -26,18 +29,18 @@ const Contact = mongoose.model("Contact", contactSchema);
 //   mongoose.connection.close();
 // });
 
-if (process.argv.length === 2) {
-  Contact.find({}).then((result) => {
-    console.log(result);
-    mongoose.connection.close();
-  });
-} else if (process.argv.length === 4) {
-  const contact = new Contact({
-    name: process.argv[2],
-    number: process.argv[3],
-  });
-  contact.save().then((result) => {
-    console.log(result);
-    mongoose.connection.close();
-  });
-}
+// if (process.argv.length === 2) {
+//   Contact.find({}).then((result) => {
+//     console.log(result);
+//     mongoose.connection.close();
+//   });
+// } else if (process.argv.length === 4) {
+//   const contact = new Contact({
+//     name: process.argv[2],
+//     number: process.argv[3],
+//   });
+//   contact.save().then((result) => {
+//     console.log(result);
+//     mongoose.connection.close();
+//   });
+// }
