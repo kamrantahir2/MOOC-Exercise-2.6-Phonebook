@@ -16,12 +16,28 @@ const contactSchema = {
 
 const Contact = mongoose.model("Contact", contactSchema);
 
-const contact = new Contact({
-  name: "Arto Hellas",
-  number: "040-123456",
-});
+// const contact = new Contact({
+//   name: "Arto Hellas",
+//   number: "040-123456",
+// });
 
-contact.save().then((result) => {
-  console.log("Contact saved");
-  mongoose.connection.close();
-});
+// contact.save().then((result) => {
+//   console.log("Contact saved");
+//   mongoose.connection.close();
+// });
+
+if (process.argv.length === 2) {
+  Contact.find({}).then((result) => {
+    console.log(result);
+    mongoose.connection.close();
+  });
+} else if (process.argv.length === 4) {
+  const contact = new Contact({
+    name: process.argv[2],
+    number: process.argv[3],
+  });
+  contact.save().then((result) => {
+    console.log(result);
+    mongoose.connection.close();
+  });
+}
