@@ -13,28 +13,8 @@ morgan.token("body", (req) => {
 
 app.use(morgan(":method :url :body"));
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
+let persons = [];
+Contact.find({}).then((result) => (persons = result));
 
 app.get("/", (request, response) => {
   response.send("<h1>HELLO WORLD!</h1>");
@@ -43,6 +23,7 @@ app.get("/", (request, response) => {
 app.get("/api/persons", (request, response) => {
   Contact.find({}).then((contacts) => {
     response.send(contacts);
+    persons = contacts;
   });
 });
 
@@ -73,9 +54,11 @@ const generateNumber = () => {
 };
 
 app.post("/api/persons", (request, response) => {
-  const id = generateNumber();
-
   const body = request.body;
+
+  Contact.find({}).then((contacts) => {
+    persons = contacts;
+  });
 
   let names = persons.map(({ name }) => name);
 
@@ -93,16 +76,14 @@ app.post("/api/persons", (request, response) => {
     });
   }
 
-  const person = {
-    id: id,
+  const person = new Contact({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-
-  response.json(person);
-  console.log(persons);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
