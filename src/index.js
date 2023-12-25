@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 const app = express();
 import morgan from "morgan";
 import cors from "cors";
@@ -44,13 +44,28 @@ app.get("/api/info", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
+  const id = request.params.id;
+  const person = persons.find((person) => person._id === id);
   if (person) {
     response.json(person);
   } else {
     response.status(404).end();
   }
+});
+
+app.put("/api/persons/:id", (request, response, next) => {
+  const body = request.body;
+
+  const contact = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Contact.findByIdAndUpdate(request.params.id, contact, { new: true })
+    .then((updatedContact) => {
+      response.json(updatedContact);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {

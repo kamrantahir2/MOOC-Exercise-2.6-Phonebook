@@ -4,7 +4,7 @@ const baseUrl = "/api/persons";
 const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => {
-    console.log("response.data", response.data);
+    // console.log("response.data", response.data);
     return response.data;
   });
 };
@@ -18,4 +18,8 @@ const deleteContact = (id) => {
   return axios.delete(`${baseUrl}/${id}`);
 };
 
-export default { getAll, create, deleteContact };
+const updateContact = (id, updatedContact) => {
+  return axios.put(`${baseUrl}/${id}`, updatedContact);
+};
+
+export default { getAll, create, deleteContact, updateContact };

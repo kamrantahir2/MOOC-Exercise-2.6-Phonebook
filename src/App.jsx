@@ -116,11 +116,12 @@ const App = () => {
       setNotificationMessage(`${newContact.name} has been added`);
     } else {
       let existing = getExistingContact();
-      axios
-        .put(`http://localhost:3001/api/persons/${existing.id}`, newContact)
-        .then((resp) => console.log(resp));
 
       existing = { ...existing, number: number };
+
+      personsServices
+        .updateContact(existing._id)
+        .then((resp) => console.log(resp));
 
       setPersons(persons.map((p) => (p.id !== existing.id ? p : existing)));
       setStyleClass("notification");
