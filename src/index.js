@@ -70,9 +70,6 @@ app.put("/api/persons/:id", (request, response, next) => {
 });
 
 app.delete("/api/persons/:id", (request, response, next) => {
-  // const id = Number(request.params.id);
-  // persons = persons.filter((person) => person.id !== id);
-  // response.status(204).end();
   Contact.findByIdAndDelete(request.params.id)
     .then((result) => {
       response.status(204).end();

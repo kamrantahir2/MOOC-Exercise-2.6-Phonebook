@@ -118,8 +118,6 @@ const App = () => {
       let existing = getExistingContact();
 
       existing = { ...existing, number: number };
-      console.log("existing._id", existing._id);
-
       personsServices
         .updateContact(existing._id, existing)
         .then((resp) => console.log(resp));
