@@ -118,15 +118,17 @@ const App = () => {
       let existing = getExistingContact();
 
       existing = { ...existing, number: number };
+      console.log("existing._id", existing._id);
 
       personsServices
-        .updateContact(existing._id)
+        .updateContact(existing._id, existing)
         .then((resp) => console.log(resp));
 
-      setPersons(persons.map((p) => (p.id !== existing.id ? p : existing)));
       setStyleClass("notification");
       setNotificationMessage(`${existing.name}'s number has been updated`);
     }
+
+    personsServices.getAll().then((contacts) => setPersons(contacts));
   };
 
   const getExistingContact = () => {
