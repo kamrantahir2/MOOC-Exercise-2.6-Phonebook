@@ -10,10 +10,18 @@ mongoose
   .then(console.log("Connection successful"))
   .catch((error) => console.log("Error connecting to MongoDB: ", error));
 
-const contactSchema = {
+const contactSchema = new mongoose.Schema({
   name: String,
   number: String,
-};
+});
+
+contactSchema.set("toJson", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject.id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 const Contact = mongoose.model("Contact", contactSchema);
 
