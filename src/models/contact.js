@@ -12,7 +12,11 @@ mongoose
 
 const contactSchema = new mongoose.Schema({
   name: String,
-  number: String,
+  number: {
+    type: String,
+    minLength: 8,
+    required: true,
+  },
 });
 
 contactSchema.set("toJson", {
